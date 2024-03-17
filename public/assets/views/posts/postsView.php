@@ -7,7 +7,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <title>Make a Post</title>
 
-    <script>
+    <!-- <script>
         $(document).ready(function() {
             $("#form-id").submit(function(event) {
                 event.preventDefault(); 
@@ -23,7 +23,7 @@
                 }); 
             }); 
         }); 
-    </script>
+    </script> -->
 </head>
     <body>
         <form id="form-id" action="" method="POST">
@@ -41,6 +41,55 @@
             <br><br>
             <button id="submit-input" value="submit">Share post</button>
         </form>
-        <p class="data-container"></p>
+        <div id="data-container"></div>
+
+        <script>
+            $(document).ready(function () {
+                $('#form-id').on('submit', function (e) {
+                    e.preventDefault();
+                    var username = $('#username-input').val();
+                    var title = $('#title-input').val();
+                    var description = $('#description-input').val();
+
+                    const data = {
+                        username: username,
+                        title: title,
+                        description: description,
+                    }
+
+                    $.ajax({
+                        url: 'http://localhost:8888/posts',
+                        type: "POST",
+                        data: data,
+                        dataType: "json",
+                        success: function (data) {
+                            console.log(data);
+                            $('#username-input').val('')
+                            $('#title-input').val('')
+                            $('#description-input').val('')
+                            $('#data-container').html(
+                                `<div>
+                                    <p>Form submitted successfully!</p>
+                                    <p>${data.name}</p>
+                                    <p>${data.title}</p>
+                                    <p>${data.description}</p>
+                                 </div>`
+                            )
+                        },
+                        error: function (data){
+
+                            $('#data-container').html('')
+                            $.each( data.responseJSON, function( key, value ) {
+                                $('#data-container').append(`
+                                   <p>${value}</p> `)
+                            });
+
+                        }
+                    });
+
+                });
+            })
+        </script>
     </body>      
+
 </html>
